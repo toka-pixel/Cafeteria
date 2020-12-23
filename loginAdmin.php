@@ -20,12 +20,12 @@ if(isset($_GET['name'])&& isset($_GET['password'])){
     $_SESSION['name']=$name;
     $_SESSION['password']=$pass;
    
-    $check=$user->login($name,$pass);
+    $check=$user->loginAdmin($name,$pass);
     
   
     if($check){
    
-        header('Location: homeUser.php');
+        header('Location: homeAdmin.php');
        
     }
     else{

@@ -78,7 +78,7 @@
      //  check login for admin is exit
      function loginAdmin($name,$pass){
 
-      $selQry="select * from admin where `userName`=:sname and `userPass`=:spass ";
+      $selQry="select * from admin where `adminName`=:sname and `adminPass`=:spass ";
       $stmt=$this->db->prepare($selQry);
 
       $stmt->bindParam(":sname",$name);
