@@ -72,8 +72,98 @@
 
       return   $items['userimg'];
       }
+      /////////////////////////////////////////////////////////////////////////////////////////
+      function addUser()
+      {
+        if(isset($_POST['Name']))
+        {
+        $upfile=$_FILES['picture'];
+       
+       echo "<hr>";
+       $filename= $upfile["name"];
+       
+       echo "<hr>";
+       
+       echo "<hr>";
+       $userName= $_REQUEST["Name"];
+       // echo "<hr>";
+       // print_r($userName) ;
+        $userEmail= $_REQUEST["email"];
+       $userPass= $_REQUEST["password"];
+       $userRoom= $_REQUEST["room"];
+       $myImg="<img src=".$filename." height='100px' width='100px'/>";
+       $selQry="Insert into `user`(`userName`,`userEmail`,`userPass`,`roomNumber`,`userImg`,`idRoom`) values (:sname,:semail,:spassword,:roomNo,:img,1)";
+      $stmt=$this->db->prepare($selQry);
 
+        $stmt->bindParam(":semail",$userEmail);
+        $stmt->bindParam(":spassword",$userPass);
+        $stmt->bindParam(":sname",$userName);
+       $stmt->bindParam(":roomNo",$userRoom);
+        $stmt->bindParam(":img",$myImg);
+         $stmt->execute();
+        
+       } 
+      }
+      ///////////////////////////////////////////////////////////////////////////////////////////
+      
+     //////////////////////////////////////////////////////////////////////////////////////////
+       function displayUser()
+      {
+        
 
+        $selQry="select * from user";
+      $stmt=$this->db->prepare($selQry);
+
+      // $stmt->bindParam(":sname",$name);
+     // $stmt->bindParam(":spass",$pass);
+
+     $stmt->execute();
+     $rows=$stmt->fetchAll(PDO::FETCH_ASSOC);   #stmt fetch
+        
+        // print_r($rows);
+        echo "<br>";
+        echo("<a  href='addUser.html'>add user</a>");
+        echo "<table border='15' style='border: 5px solid #7878bb;text-align:center;align:center;width:900px;'> <tr> 
+                        <th>
+                            ID
+                        </th>
+                          <th>
+                            Name
+                        </th>
+                          <th>
+                            Email
+                        </th>
+                        </th>
+                          <th>
+                            password
+                        </th>
+                        <th>
+                            room no.
+                        </th>
+                        <th>
+                            profile picture
+                        </th>
+                        <th>
+                            Profile Picture
+                        </th>
+                    </tr>";
+       foreach($rows as $row) {
+
+           echo "<tr> <td>" . $row["userId"] . "</td>" .
+               "<td>" . $row["idRoom"] . "</td>" .
+               "<td>" . $row["userName"] . "</td>" .
+               "<td>" . $row["userEmail"] . "</td>" .
+               "<td>" . $row["roomNumber"] . "</td>" .
+                "<td>" . $row["ext"] . "</td>" .
+               "<td>".$row["userImg"]. "</td>
+               
+               </tr>";
+               
+
+       }
+       echo "</table>";
+      }
+      ///////////////////////////////////////////////////////////////////////////////////////////
     
      //  check login for admin is exit
      function loginAdmin($name,$pass){
