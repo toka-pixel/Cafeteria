@@ -10,10 +10,15 @@
 
     // connect to database
     function database_con(){
-        
-        $dsn="mysql:dbname=cafeteria;dbhost=127.0.0.1;dbport=3306";
-         Define("DB_USER","root");
-         Define("DB_PASS","");
+        // connection toka
+        // $dsn="mysql:dbname=cafeteria;dbhost=127.0.0.1;dbport=3306";
+        //  Define("DB_USER","root");
+        //  Define("DB_PASS","");
+        // connection eman
+        // $dsn="mysql:dbname=cafeteria;dbhost=127.0.0.1;dbport=3306";
+        //  Define("DB_USER","root");
+        //  Define("DB_PASS","");
+
          $this->db= new PDO($dsn,DB_USER,DB_PASS);
  
          try{
@@ -82,7 +87,7 @@
       $stmt=$this->db->prepare($selQry);
 
       $stmt->bindParam(":sname",$name);
-     $stmt->bindParam(":spass",$pass);
+      $stmt->bindParam(":spass",$pass);
 
      $stmt->execute();
      $count=$stmt->rowCount();
