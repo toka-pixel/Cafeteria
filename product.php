@@ -58,7 +58,18 @@ include 'header.php';
             <div class="col-3"></div>
 
         </div>
-    </div>
+    </div> <!-- end -->
+    <?php 
+       include ('userClass.php');
+       $user= new user();
+       $user->database_con();
+       $user->addproduct();
+       $user->displayproduct();
+      
+    //    $user->displayproduct();
+
+    
+    ?>
  </body>
 </html>
 <?php
