@@ -59,17 +59,20 @@ include 'header.php';
 
         </div>
     </div> <!-- end -->
+    <div class="container ">
     <?php 
        include ('userClass.php');
        $user= new user();
        $user->database_con();
        $user->addproduct();
        $user->displayproduct();
+       
       
     //    $user->displayproduct();
 
     
     ?>
+    </div>
  </body>
 </html>
 <?php

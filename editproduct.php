@@ -4,7 +4,7 @@ session_start();
 include 'header.php';
 
 ?>
-<?php
+ <?php
 if(!isset($_GET["id"]) or !is_numeric($_GET["id"]))
 {
     header("location:product.php");
@@ -14,6 +14,7 @@ $id=$_GET["id"];
 include ('userClass.php');
 $user= new user();
  $user->database_con();
+
  $selQry="select * from `products` where `prodId`=$id LIMIT 1" ;
  $stmt=$user->db->prepare($selQry);
  $stmt->execute();
@@ -35,7 +36,7 @@ else
 <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6 offest-md-3">
-                <form class="my-2 p-3 border" method="POST" action="<?php $_SERVER["PHP_SELF"]?>">
+                <form class="my-2 p-3 border" method="POST" action="updateproduct.php">
                     <div class="form-group">
                         <label for="exampleInputName1">ProductName</label>
                         <input type="text" name="productname" value="<?php echo $row['prodName']  ?>" class="form-control" id="exampleInputName1" >
@@ -54,29 +55,8 @@ else
                 </form>
         </div>
         <div class="col-md-3"></div>
-</div>
+</div> 
 <?php
-if ($_POST){
-
- var_dump($_POST);
-    $productname=$_POST['productname'];
-    $productprice=$_POST['productprice'];
-    $avail=$_POST['availlabilty'];
-    $idprod=$_POST['productid'];
-
- $selQry=" update  `products` set `proName`=:sproductname,`prodPrice`=:sproductprice,`availibilty`=:savail where `prodId`=:sid " ;
- $stmt=$user->db->prepare($selQry);
- $stmt->bindParam(":sproductname",$productname);
- $stmt->bindParam(":sproductprice",$productprice);
- $stmt->bindParam(":savail",$avail);
- $stmt->bindParam(":sid",$idprod);
- $stmt->execute();
- $rows=$stmt->fetchAll(PDO::FETCH_ASSOC);
- var_dump($rows);
-//  echo "hello update";
-}
- 
-
 ?>
 
 
