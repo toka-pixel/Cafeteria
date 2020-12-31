@@ -12,26 +12,34 @@ if(isset($_GET['name'])&& isset($_GET['password'])){
 
     $name=$_GET['name'];
     $pass=$_GET['password'];
+ 
 
     
 
     // echo $_SESSION['userimg'];
-
     $_SESSION['name']=$name;
     $_SESSION['password']=$pass;
+  
+   
    
     $check=$user->login($name,$pass);
     
   
     if($check){
-   
+
+        $_SESSION['user_id']=$user->userid($name,$pass);
+
+        
+       
         header('Location: homeUser.php');
        
     }
     else{
-       echo '<div class="alert alert-danger" role="alert">
-              account not found
-            </div>';
+    
+
+    echo "<script type='text/javascript'>alert('account not found');</script>";
+
+           
     }
 
 }
@@ -85,6 +93,10 @@ if(isset($_GET['name'])&& isset($_GET['password'])){
     text-decoration: none;
   
         }
+        .not-found{
+            color:red;
+            display:none;
+        }
     </style>
 </head>
 
@@ -121,8 +133,11 @@ if(isset($_GET['name'])&& isset($_GET['password'])){
                                 <button class="btn" id="btnLogin" type="submit" >Log IN</button>
                                 <div class="forgot">
                                     <span>Forgot</span>
-                                    <a href="loginUser.php?forgot=true" name="forgot">password?</a>
+                                    <a href="forgotPassword.php" name="forgot">password?</a>
+
+
                                 </div>
+                             
                                 <!-- <div class="signUp">
 
                                     <a href="reg1.html">Sign Up</a>?
