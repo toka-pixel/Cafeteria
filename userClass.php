@@ -10,10 +10,15 @@
 
     // connect to database
     function database_con(){
-        
+        // connection toka and esraa
+        // $dsn="mysql:dbname=cafeteria;dbhost=127.0.0.1;dbport=3306";
+        //  Define("DB_USER","root");
+        //  Define("DB_PASS","");
+        // connection eman
         $dsn="mysql:dbname=cafeteria;dbhost=127.0.0.1;dbport=3306";
          Define("DB_USER","root");
          Define("DB_PASS","");
+
          $this->db= new PDO($dsn,DB_USER,DB_PASS);
  
          try{
@@ -546,7 +551,7 @@ $selQry2="SELECT sum(`totalPrice`) AS `Total` FROM `orders` WHERE `orderDate` >=
       $stmt=$this->db->prepare($selQry);
 
       $stmt->bindParam(":sname",$name);
-     $stmt->bindParam(":spass",$pass);
+      $stmt->bindParam(":spass",$pass);
 
      $stmt->execute();
      $count=$stmt->rowCount();
@@ -562,9 +567,101 @@ $selQry2="SELECT sum(`totalPrice`) AS `Total` FROM `orders` WHERE `orderDate` >=
       
      }
 
+     /////////////////product//////////////
+     ///////////add product////////////
+     function addproduct()
+     {
+       
+      if(isset($_POST['product']))
+      {
+        // var_dump($_POST);
+        $upfile=$_FILES['picture'];
+        $filename=$upfile['name'];
+        // $myImg="<img src="img/".$filename." height='100px' width='100px'/>";
+        $myImg="<img src=img/".$filename." height='100px' width='100px'/>";
+        
+        $productname=$_POST['product'];
+        $productprice=$_POST['price'];
+ 
+        $selqry="insert into `products`(`prodName`,`prodPrice`,`prodImg`,`idCat`)values (:sproduct,:sprice,:simg,1)";
+        $stmt=$this->db->prepare($selqry);
+        $stmt->bindParam(":sproduct",$productname);
+        $stmt->bindParam(":sprice",$productprice);
+        $stmt->bindParam(":simg",$myImg);
+        $stmt->execute();
+      }
 
+     }
+     //////////////////display products/////////////////////
+     function displayproduct ()
+     {
+      $selQry="select * from products";
+      $stmt=$this->db->prepare($selQry);
+      $stmt->execute();
+      $rows=$stmt->fetchAll(PDO::FETCH_ASSOC); 
+      echo "<table class='table ' style='text-align:center' > <thead class='thead-dark'><tr> 
+                        <th>
+                            Product
+                        </th>
+                          <th>
+                            Price
+                        </th>
+                        <th>
+                        Image
+                         </th>
+                         <th>
+                         Action
+                          </th>
+                       
+                       
+                        
+                    </tr></thead>";
+       foreach($rows as $row) {
 
+           echo "<tr> <td>" . $row["prodName"] . "</td>" .
+               "<td>" . $row["prodPrice"] . "</td>".
+               "<td>" . $row["prodImg"] . "</td>".
+               "<td>
+                  <a  class='btn btn-success' href='editproduct.php?id=" .$row["prodId"]." ' >Edit<i class='fa fa-close'></i></a>
+                  <a class='btn btn-danger' href='deleteproduct.php?id=" .$row["prodId"]."' >Delete<i class='fa fa-close'></i></a>
+                </td>
+
+                </tr>";
+                // "<td> href='update.php?id=" .$item["id"]." '
+                //     <a href='update.php?id=" .$item["id"]." ' class='btn btn-outline-success' >Edit</a>
+                //   <a href='#' onclick='delete_user({$item["id"]})' class='btn btn-outline-danger' >Delete</a></td>"
+               
+
+       }
+       echo "</table>"; 
+       
+     }
+     //////////deleteproduct///////////
+     public function deleteproduct()
+      {
+        $id = $_GET['id'];
+         if(!isset($_GET['id']) or !is_numeric($_GET['id']))
+    {
+        header("Location:product.php");
+    }
+    $selQry="SELECT * FROM `products`  WHERE `prodId`='$id' LIMIT 1 ";
+      $stmt=$this->db->prepare($selQry);
+
+    $result =  $stmt->execute();
+    $check = mysqli_num_rows($result);
+     if(!$check)
+    {
+        header("Location:product.php");
+    }
     
+    $sql2 = "DELETE FROM `products` WHERE `prodId`='$id' ";
+    $stmt=$this->db->prepare($sql2);
+    $stmt->execute();
+    echo'<h1 class="text-center col-12 bg-danger py-3 text-white my-2"> Product  Have Been Deleted </h1>';
+     header("refresh:3;url=product.php"); 
+      }
+   
+     
 
      
 
