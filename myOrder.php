@@ -4,6 +4,7 @@ session_start();
 include 'header.php';
 
 ?>
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light ">
   <div class="container">
   <a class="navbar-brand" href="#">Cafeteria</a>
@@ -17,18 +18,9 @@ include 'header.php';
         <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Products</a>
+        <a class="nav-link" href="myOrder.php">My orders</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="Users.php">Users</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Manual Orders</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="checks.php">Checks</a>
-      </li>
-      
+     
     </ul>
    
 
@@ -36,23 +28,19 @@ include 'header.php';
     
 
       <p class="name-in-header"><?php echo $_SESSION['name']  ?></p>
+
   </div>
   </div>
 </nav>
+<?php 
+include ('userClass.php');
 
+ $user= new user();
+ $user->database_con();
+ $user->myOrders();
+  $user->displayOrder();
+ ?>
 
-<!-- products -->
-
-<div class="container">
-
- <div class="row">
-   <div class="col-sm-12 col-md-4 ">
-   </div>
-
-   <div class="col-sm-12 col-md-8">
-   </div>
- </div>
-</div>
 
 <?php
 include('footer.php');

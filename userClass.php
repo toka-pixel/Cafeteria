@@ -79,12 +79,8 @@
         {
         $upfile=$_FILES['picture'];
        
-       // echo "<hr>";
        $filename= $upfile["name"];
        
-       // echo "<hr>";
-       
-       // echo "<hr>";
        $userName= $_REQUEST["Name"];
        // echo "<hr>";
        // print_r($userName) ;
@@ -180,6 +176,9 @@
         {
             $name =     $_POST['name'];
             $email =    $_POST['email'];
+            $roomNo=$_POST['room'];
+
+            $ext=$_POST['ext'];
 
            
                   
@@ -191,13 +190,15 @@
                             
 
                             $sql = "UPDATE `user` SET  `userName`='$name' ,`userEmail`='$email',
-                            `userPass`='$password' 
+                           `userPass`='$password',`ext`= '$ext',`roomNumber`='$roomNo'
+
                             WHERE `userId`='$id' ";
 
                         }   
                         else 
                         {
-                            $sql = "UPDATE `user` SET  `userName`='$name' ,`userEmail`='$email'  
+                            $sql = "UPDATE `user` SET  `userName`='$name' ,`userEmail`='$email',`ext`= '$ext',`roomNumber`='$roomNo'
+                            
                             WHERE `userId`='$id' ";
                         }
                         $stmt=$this->db->prepare($sql);
@@ -209,7 +210,7 @@
                         if($result)
                         {
                             $success = "Updated Successfully ";
-                            header("refresh:3;url=users.php");
+                            header("refresh:1;url=users.php");
                         }
                     
                 
@@ -237,7 +238,7 @@
         // print_r($rows);
         // echo "<br>";
         echo'<h1 class="text-center col-12 bg-info py-3 text-white my-2"> All Users</h1>';
-        echo("<a style='margin-left:1200px' type='button' class='btn btn-primary btn-lg' href='addUser.html'>add user</a>");
+        echo("<a style='margin-left:1200px;margin-bottom:10px' type='button' class='btn btn-primary btn-lg' href='addUser.html'>add user</a>");
         echo "<table class='table table-striped' style='text-align:center'> <tr> 
                         
                         <th>
@@ -296,14 +297,247 @@
     {
         header("Location:users.php");
     }
-    
+    $sql1="DELETE FROM ordroomuser WHERE `idUser`='$id'";
     $sql2 = "DELETE FROM `user` WHERE `userId`='$id' ";
+    $stmt1=$this->db->prepare($sql1);
+    $stmt1->execute();
     $stmt=$this->db->prepare($sql2);
     $stmt->execute();
     echo'<h1 class="text-center col-12 bg-danger py-3 text-white my-2"> User  Have Been Deleted </h1>';
      header("refresh:3;url=users.php"); 
       }
       ///////////////////////////////////////////////////////////////////////////////////////////
+      public function selectUserNames()
+      {
+         $selQry="select userName,userId from user";
+      $stmt=$this->db->prepare($selQry);
+     $stmt->execute();
+     $rows=$stmt->fetchAll(PDO::FETCH_ASSOC);   #stmt fetch
+        
+        // print_r($rows);
+        echo "<form method='post' action='".$_SERVER['PHP_SELF']."'><select class='custom-select' style='width:300px;margin:30px;margin-left:520px;' name='UName'><option selected disabled>select user Name</option>";
+        foreach($rows as $row) {
+          
+          echo "<option value='".$row["userId"]."'>".$row["userName"]."</option>";
+
+          
+        }
+        echo "</select><br><input style='margin-left:50px;' type='date' name='start'><input style='margin:0 15px;' type='date' name='end'><button type='submit' class='btn btn-primary'>display</button></form><br>";
+        // echo("<input type='datetime-local' name='start'><input type='datetime-local' name='end'>");
+        // echo $_POST['UName'];
+      }
+      ///////////////////////////////////////////////////////////////////////////////////////////////
+      public function displayOrderHistory()
+      {
+        if(isset($_POST['UName'])){
+        $UName=$_POST['UName'];
+        $selQry1="select userName from user where userId=$UName";
+      $stmt1=$this->db->prepare($selQry1);
+     $result1=$stmt1->execute();
+     $rowss=$stmt1->fetchAll(PDO::FETCH_ASSOC);
+     
+        if(isset($_POST['start'])&&isset($_POST['end'])&&!empty($_POST['start'])&&!empty($_POST['end'])){
+        
+        $sql2 = "SELECT DISTINCT `orderDate`,`totalPrice` FROM `orders`,`ordroomuser` WHERE `idUser`=$UName and `orderDate` >= '".$_POST['start']."' and `orderDate` <= '".$_POST['end']. "'";
+    
+
+      }
+       else{$sql2 = "SELECT DISTINCT `orderDate`,`totalPrice` FROM `orders`,`ordroomuser` WHERE `idUser`=$UName";
+    }
+        $stmt=$this->db->prepare($sql2);
+     $result=$stmt->execute();
+     // var_dump($result);
+     $items=$stmt->fetchAll(PDO::FETCH_ASSOC);
+     // var_dump($items);
+    echo "<center><b><span style='color:#007bff'>Checks for:</span> ".$rowss[0]["userName"]."<br><span style='color:#007bff'>From: </span>".$_POST['start']."<span style='color:#007bff'>TO: </span>".$_POST['end']."</p></center><table class='table table-striped' style='text-align:center'> <tr> 
+                        
+                        <th>
+                            Order Date
+                        </th>
+                          <th>
+                           Amount
+                        </th>
+                          
+                    </tr>";
+       
+       
+   
+        }else{
+          $sql2 = "SELECT DISTINCT `orderDate`,`totalPrice` FROM `orders`";
+     $stmt=$this->db->prepare($sql2);
+     $result=$stmt->execute();
+     // var_dump($result);
+     $items=$stmt->fetchAll(PDO::FETCH_ASSOC);
+      // var_dump($items);
+     
+      echo "<center style='color:#007bff;font-size:20px;margin-bottom:8px;'><b>Checks for all Users</b></center><table class='table table-striped' style='text-align:center'> <tr> 
+                        
+                        <th>
+                            Order Date
+                        </th>
+                          <th>
+                           Amount
+                        </th>
+                          
+                    </tr>";
+       
+        }
+        foreach($items as $row) {
+
+           echo "<tr> 
+               <td style='margin-top:20px'>" . $row["orderDate"] . "</td>" .
+               "<td>" . $row["totalPrice"] . " "."<b>EGP</b></td></tr>" ;     
+
+       }
+       echo "</table>";
+      }
+      ///////////////////////////////////////////////////////////////////////////////////////////////
+      public function myOrders()
+      {
+        echo'<h1 class="text-center col-12 bg-primary py-3 text-white my-2"> My Orders </h1>';
+       echo "<form method='post' action='".$_SERVER['PHP_SELF']."'><input style='margin-left:50px;margin-top:30px;' type='date' name='start'><input style='margin:0 15px;' type='date' name='end'><button type='submit' class='btn btn-primary'>display</button></form>";
+       $usName= $_SESSION['name'];
+
+       $pass= $_SESSION['password'];
+      
+       // echo $usName.$pass;
+       
+       
+
+       if((isset($_POST['start'])&&isset($_POST['end']))&&(!empty($_POST['start'])&&!empty($_POST['end']))){
+         $sDate=$_POST['start'];
+       $eDate=$_POST['end'];
+       
+        $selQry="SELECT `orderId`,`orderDate`,`status`,`totalPrice` FROM `orders` WHERE `orderDate` >=:sDate 
+        and `orderDate` <=:eDate and `orderId` IN (SELECT `idOrder` FROM ordroomuser 
+      WHERE `idUser`=(select `userId` from user where `userName`=:sname and `userPass`=:spass))";
+       
+      $stmt=$this->db->prepare($selQry);
+      
+
+      $stmt->bindParam(":sname",$usName);
+     $stmt->bindParam(":spass",$pass);
+     $stmt->bindParam(":sDate",$sDate);
+     $stmt->bindParam(":eDate",$eDate);
+      $result=$stmt->execute();
+     // echo $result;
+     $items=$stmt->fetchAll(PDO::FETCH_ASSOC);
+       // var_dump($items);
+     //totalprice
+$selQry2="SELECT sum(`totalPrice`) AS `Total` FROM `orders` WHERE `orderDate` >=:sDate 
+        and `orderDate` <=:eDate and `orderId` IN (SELECT `idOrder` FROM ordroomuser 
+      WHERE `idUser`=(select `userId` from user where `userName`=:sname and `userPass`=:spass))";
+
+     $stmt2=$this->db->prepare($selQry2);
+      $stmt2->bindParam(":sname",$usName);
+     $stmt2->bindParam(":spass",$pass);
+     $stmt2->bindParam(":sDate",$sDate);
+     $stmt2->bindParam(":eDate",$eDate);
+     $stmt2->execute();
+     // echo $result;
+     $item=$stmt2->fetchAll(PDO::FETCH_ASSOC);
+
+       echo "<center><b><span style='color:#007bff;font-size:20px'>My Orders</span><br><span style='color:#007bff'>From: </span>".$_POST['start']."<span style='color:#007bff'>TO: </span>".$eDate."</p></center>";
+      
+
+       }else{
+       $selQry="SELECT `orderId` ,`orderDate`,`status`,`totalPrice` FROM `orders` WHERE `orderId` IN (SELECT `idOrder` FROM ordroomuser 
+      WHERE `idUser`=(select `userId` from user where `userName`=:sname and `userPass`=:spass))";
+       $selQry2="SELECT sum(`totalPrice`) AS `Total` FROM `orders` WHERE `orderId` IN (SELECT `idOrder` FROM ordroomuser 
+      WHERE `idUser`=(select `userId` from user where `userName`=:sname and `userPass`=:spass))";
+      $stmt=$this->db->prepare($selQry);
+
+      $stmt->bindParam(":sname",$usName);
+     $stmt->bindParam(":spass",$pass);
+
+     $result=$stmt->execute();
+     $items=$stmt->fetchAll(PDO::FETCH_ASSOC);
+       // var_dump($items);
+     //totalPrice
+     $stmt2=$this->db->prepare($selQry2);
+      $stmt2->bindParam(":sname",$usName);
+     $stmt2->bindParam(":spass",$pass);
+     $result=$stmt2->execute();
+     $item=$stmt2->fetchAll(PDO::FETCH_ASSOC);
+       
+       echo "<center style='color:#007bff;font-size:20px;margin-bottom:8px;'><b>My Orders</b></center>";
+       
+       }
+       echo "<table class='table table-striped' style='text-align:center'> <tr> 
+                        
+                        <th>
+                            Order Date
+                        </th>
+                        <th>
+                            Status
+                        </th>
+                          <th>
+                           Amount
+                        </th>
+                        <th>
+                           Actions
+                        </th>
+                          
+                    </tr>";
+       foreach($items as $row) {
+
+           echo "<tr> 
+               <td style='margin-top:20px'>" . $row["orderDate"] . "</td><td>" . $row["status"] . "</td>" .
+               "<td>" . $row["totalPrice"] . " "."<b>EGP</b></td>
+               <td>";
+               if($row["status"]=='processing'){
+               echo "<a class='btn btn-danger' href='cancelOrder.php?id=".$row['orderId']." '> Cancel<i class='fa fa-close'></i> </a>";}
+            echo "<a style='margin-left:20px;' onclick='cc()' class='btn btn-success' href='myOrder.php?id2=".$row['orderId']." '> Display<i class='fa fa-close'></i> </a></td></tr>" ;     
+
+       }
+       echo "</table>";
+       if(isset($item)){
+       echo("<div style='width:500px;margin-left:100px;'><span style='font-size:20px;font-weight:bold;color:red;'>Total=</span>"." ".$item[0]["Total"]." "."<b>EGP</b></div>");}
+        
+      }
+      ///////////////////////////////////////////////////////////////////////////////////////
+      function displayOrder()
+       {
+        if(isset($_GET['id2'])){
+         $ss=$_GET['id2'];
+         echo $ss;
+        }
+       }
+      //////////////////////////////////////////////////////////////////////////////////////////////////
+      public function CancelOrder()
+      {
+        
+        $id = $_GET['id'];
+        
+         if(!isset($_GET['id']) or !is_numeric($_GET['id']))
+    {
+        header("Location:myOrder.php");
+    }
+    $selQry="SELECT * FROM `orders`  WHERE `orderId`='$id' LIMIT 1 ";
+      $stmt=$this->db->prepare($selQry);
+
+    $result =  $stmt->execute();
+     
+     if(!$result)
+    {
+        header("Location:myOrder.php");
+    }
+    $sql3="DELETE FROM `prodorders` WHERE `idOrder`='$id'";
+    $sql1="DELETE FROM ordroomuser WHERE `idOrder`='$id'";
+    $sql2 = "DELETE FROM `orders` WHERE `orderId`='$id' ";
+    // echo $sql2;
+    $stmt3=$this->db->prepare($sql3);
+    $stmt1=$this->db->prepare($sql1);
+    $stmt2=$this->db->prepare($sql2);
+    $stmt3->execute();
+    $stmt1->execute();
+    $stmt2->execute();
+    // echo $res;
+    echo'<h1 class="text-center col-12 bg-danger py-3 text-white my-2"> Order Canceled </h1>';
+     header("refresh:1;url=myOrder.php"); 
+      }
+
+      //////////////////////////////////////////////////////////////////////////////////////////////////
     
      //  check login for admin is exit
      function loginAdmin($name,$pass){

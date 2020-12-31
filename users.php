@@ -26,7 +26,7 @@ include 'header.php';
         <a class="nav-link" href="#">Manual Orders</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Checks</a>
+        <a class="nav-link" href="checks.php">Checks</a>
       </li>
       
     </ul>

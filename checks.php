@@ -20,7 +20,7 @@ include 'header.php';
         <a class="nav-link" href="#">Products</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="Users.php">Users</a>
+        <a class="nav-link" href="users.php">Users</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#">Manual Orders</a>
@@ -39,20 +39,23 @@ include 'header.php';
   </div>
   </div>
 </nav>
+<h1 class='text-center col-12 bg-primary py-3 text-white my-2'>Checks</h1>
 
 
-<!-- products -->
+<!-- checks -->
+<?php  
+include ('userClass.php');
 
-<div class="container">
+ $user= new user();
+ $user->database_con();
+ 
+ $user->selectUserNames();
+ $user->displayOrderHistory();
+ 
 
- <div class="row">
-   <div class="col-sm-12 col-md-4 ">
-   </div>
 
-   <div class="col-sm-12 col-md-8">
-   </div>
- </div>
-</div>
+ ?>
+
 
 <?php
 include('footer.php');
