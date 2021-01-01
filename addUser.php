@@ -37,12 +37,14 @@
   </div>
    <div class="form-group">
     <label for="room">room no.</label>
-    <select id="room" class="form-control" required="" name="room">
-      <option disabled="" selected="">select room no.</option>
-      <option>5</option>
-      <option>44</option>
-      <option>445</option>
-    </select>
+    <?php
+session_start();
+include ('userClass.php');
+
+ $user= new user();
+ $user->database_con();
+ $user->selectRoom_es();
+?>
   </div>
   <div class="form-group">
     <label for="exampleInputName">Ext.</label>

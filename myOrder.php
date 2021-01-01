@@ -38,7 +38,7 @@ include ('userClass.php');
  $user= new user();
  $user->database_con();
  $user->myOrders();
-  $user->displayOrder();
+  $user->displayOrder_es();
  ?>
 
 

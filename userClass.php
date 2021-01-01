@@ -12,10 +12,14 @@
 
     // connect to database
     function database_con(){
-        
+        // connect toka and esraa
         $dsn="mysql:dbname=cafeteria;dbhost=127.0.0.1;dbport=3306";
          Define("DB_USER","root");
          Define("DB_PASS","");
+        // connect eman
+         // $dsn="mysql:dbname=cafeteria;dbhost=127.0.0.1;dbport=3306";
+         // Define("DB_USER","root");
+         // Define("DB_PASS","");
          $this->db= new PDO($dsn,DB_USER,DB_PASS);
  
          try{
@@ -109,13 +113,12 @@
 
       return   $items['userimg'];
       }
-<<<<<<< HEAD
     
 
 
       // show products in home user
 
-      function showproducts(){
+      function showproductsUsert(){
         $data=array();
         $selectQry='select * from products';
         $selectstmt=$this->db->prepare($selectQry);
@@ -201,9 +204,179 @@
 
         return $data;
       }
-=======
-      /////////////////////////////////////////////////////////////////////////////////////////
-      function addUser()
+
+    
+     //  check login for admin is exit
+    
+    function loginAdmin($name,$pass){
+
+      $selQry="select * from admin where `adminName`=:sname and `adminPass`=:spass ";
+      $stmt=$this->db->prepare($selQry);
+
+      $stmt->bindParam(":sname",$name);
+     $stmt->bindParam(":spass",$pass);
+
+     $stmt->execute();
+     $count=$stmt->rowCount();
+
+     if($count==1){
+       return true;
+     }
+
+     else{
+      return false;
+     }
+    
+      
+     }
+
+
+
+
+    //  insert orders of user in order table from home user
+     function user_insert_usert($notes,$totalPrice,$idRoom,$idUser,$idProd,$quantity){
+
+      $instQry = "insert into orders (orderDate, status,notes, totalPrice, idAdmin) 
+            values (?, ?,?, ?, ?)";
+            $instmt=$this->db->prepare($instQry);
+         
+            $res = $instmt->execute( DATE(),'Processing', $notes,  $totalPrice , 1);
+
+            
+            $selectProduct = "insert into ordroomuser (idOrder, idRoom, idUser) 
+            values (LAST_INSERT_ID(), ?, ?)";
+            $stmt = $this->db->prepare($selectProduct);
+
+              $res = $stmt->execute($roomId, $idUser );
+
+              
+              for($eachProduct = 0; $eachProduct < count($productId); $eachProduct++){
+                $insertProducts = "insert into prodorders (idOrder, idProd, quantity) 
+                values ( LAST_INSERT_ID(),? , ?)";
+                $insertProductsStmt = $this->db->prepare($insertProducts);
+                $insertProductRes = $insertProductsStmt->execute( $productId[$eachProduct] ,$productQuantity[$eachProduct] );
+            }
+
+
+          
+     }
+     /////////////// comment///////////////
+     ///////////////  addproduct////////
+     function addproduct()
+     {
+       
+      if(isset($_POST['product']))
+      {
+        // var_dump($_POST);
+        $upfile=$_FILES['picture'];
+        $filename=$upfile['name'];
+        // $myImg="<img src="img/".$filename." height='100px' width='100px'/>";
+        $myImg="<img src=img/".$filename." height='100px' width='100px'/>";
+        
+        $productname=$_POST['product'];
+        $productprice=$_POST['price'];
+ 
+        $selqry="insert into `products`(`prodName`,`prodPrice`,`prodImg`,`idCat`)values (:sproduct,:sprice,:simg,1)";
+        $stmt=$this->db->prepare($selqry);
+        $stmt->bindParam(":sproduct",$productname);
+        $stmt->bindParam(":sprice",$productprice);
+        $stmt->bindParam(":simg",$myImg);
+        $stmt->execute();
+      }
+
+     }
+     /////////////////////////////////
+     //////////////////display products/////////////////////
+     function displayproduct ()
+     {
+      $selQry="select * from products";
+      $stmt=$this->db->prepare($selQry);
+      $stmt->execute();
+      $rows=$stmt->fetchAll(PDO::FETCH_ASSOC); 
+      echo "<table class='table ' style='text-align:center' > <thead class='thead-dark'><tr> 
+                        <th>
+                            Product
+                        </th>
+                          <th>
+                            Price
+                        </th>
+                        <th>
+                        Image
+                         </th>
+                         <th>
+                         Action
+                          </th>
+                       
+                       
+                        
+                    </tr></thead>";
+       foreach($rows as $row) {
+
+           echo "<tr> <td>" . $row["prodName"] . "</td>" .
+               "<td>" . $row["prodPrice"] . "</td>".
+               "<td>" . $row["prodImg"] . "</td>".
+               "<td>
+                  <a  class='btn btn-success' href='editproduct.php?id=" .$row["prodId"]." ' >Edit<i class='fa fa-close'></i></a>
+                  <a class='btn btn-danger' href='deleteproduct.php?id=" .$row["prodId"]."' >Delete<i class='fa fa-close'></i></a>
+                </td>
+
+                </tr>";
+                // "<td> href='update.php?id=" .$item["id"]." '
+                //     <a href='update.php?id=" .$item["id"]." ' class='btn btn-outline-success' >Edit</a>
+                //   <a href='#' onclick='delete_user({$item["id"]})' class='btn btn-outline-danger' >Delete</a></td>"
+               
+
+       }
+       echo "</table>"; 
+       
+     }
+     //////////deleteproduct///////////
+     public function deleteproduct()
+      {
+        $id = $_GET['id'];
+         if(!isset($_GET['id']) or !is_numeric($_GET['id']))
+    {
+        header("Location:product.php");
+    }
+    $selQry="SELECT * FROM `products`  WHERE `prodId`='$id' LIMIT 1 ";
+      $stmt=$this->db->prepare($selQry);
+
+    $result =  $stmt->execute();
+    $check = mysqli_num_rows($result);
+     if(!$check)
+    {
+        header("Location:product.php");
+    }
+    
+    $sql2 = "DELETE FROM `products` WHERE `prodId`='$id' ";
+    $stmt=$this->db->prepare($sql2);
+    $stmt->execute();
+    echo'<h1 class="text-center col-12 bg-danger py-3 text-white my-2"> Product  Have Been Deleted </h1>';
+     header("refresh:3;url=product.php"); 
+      }
+      ////////////////addcategory/////////
+      function addcategory()
+      {
+        if(isset($_POST['idcategory']))
+        {
+        
+       $idcat=$_POST['idcategory'];
+        $namecat= $_POST['namecategory'];
+        
+       
+       $selQry="Insert into `category`(`catId`,`catName`) values (:sid,:snam)";
+      $stmt=$this->db->prepare($selQry);
+      $stmt->bindParam(":sid",$idcat);
+      $stmt->bindParam(":snam",$namecat);
+         $stmt->execute();
+        //  echo'<h1 class="text-center col-12 bg-danger py-3 text-white my-2"> Product  Have Been Deleted </h1>';
+        //  header("refresh:3;url=addproduct.php"); 
+        
+       } 
+      }
+   
+      ///user
+       function addUser()
       {
         if(isset($_POST['Name']))
         {
@@ -244,7 +417,6 @@
     $selQry="SELECT * FROM `user` WHERE `userId`='$id' ";
     // echo $selQry;
       $stmt=$this->db->prepare($selQry);
->>>>>>> 8b55c7597ba5abcbf352e5c53a867c25ba5ca925
 
     $result = $stmt->execute();
     
@@ -278,14 +450,22 @@
                 <input type='password' name='password' class='form-control' id='exampleInputPassword1'>
             </div>
             <div class='form-group'>
-                <label for='room'>room no.</label>
-    <select id='room' class='form-control' required='' name='room'>
-      <option disabled='' selected=''>select room no.</option>
-      <option>5</option>
-      <option>44</option>
-      <option>445</option>
-    </select>
-            </div>
+                <label for='room'>room no.</label>";
+    
+
+        $selqRoom="select * from room";
+         $stmt=$this->db->prepare($selqRoom);
+          $stmt->execute();
+          $rows=$stmt->fetchAll(PDO::FETCH_ASSOC); 
+     // var_dump($rows);
+          echo "<select id='room' class='form-control' required name='room'>";
+      
+      foreach ($rows as $value) {
+       echo "<option>".$value['roomNo']."</option>";
+      }
+      
+    echo"</select>";
+            echo "</div>
             <div class='form-group'>
                 <label for='exampleInputroom'>Ext.</label>
                 <input type='number' name='ext' value='".$row[0]['ext']."' class='form-control' 
@@ -369,7 +549,7 @@
         // print_r($rows);
         // echo "<br>";
         echo'<h1 class="text-center col-12 bg-info py-3 text-white my-2"> All Users</h1>';
-        echo("<a style='margin-left:1200px;margin-bottom:10px' type='button' class='btn btn-primary btn-lg' href='addUser.html'>add user</a>");
+        echo("<a style='margin-left:1200px;margin-bottom:10px' type='button' class='btn btn-primary btn-lg' href='addUser.php'>add user</a>");
         echo "<table class='table table-striped' style='text-align:center'> <tr> 
                         
                         <th>
@@ -457,8 +637,8 @@
         // echo("<input type='datetime-local' name='start'><input type='datetime-local' name='end'>");
         // echo $_POST['UName'];
       }
-      ///////////////////////////////////////////////////////////////////////////////////////////////
-      public function displayOrderHistory()
+      //order
+       public function displayOrderHistory()
       {
         if(isset($_POST['UName'])){
         $UName=$_POST['UName'];
@@ -618,7 +798,7 @@ $selQry2="SELECT sum(`totalPrice`) AS `Total` FROM `orders` WHERE `orderDate` >=
                <td>";
                if($row["status"]=='processing'){
                echo "<a class='btn btn-danger' href='cancelOrder.php?id=".$row['orderId']." '> Cancel<i class='fa fa-close'></i> </a>";}
-            echo "<a style='margin-left:20px;' onclick='cc()' class='btn btn-success' href='myOrder.php?id2=".$row['orderId']." '> Display<i class='fa fa-close'></i> </a></td></tr>" ;     
+            echo "<a style='margin-left:20px;'  class='btn btn-success' href='myOrder.php?id2=".$row['orderId']." '> Display<i class='fa fa-close'></i> </a></td></tr>" ;     
 
        }
        echo "</table>";
@@ -627,7 +807,7 @@ $selQry2="SELECT sum(`totalPrice`) AS `Total` FROM `orders` WHERE `orderDate` >=
         
       }
       ///////////////////////////////////////////////////////////////////////////////////////
-      function displayOrder()
+      function displayOrder_es()
        {
         if(isset($_GET['id2'])){
          $ss=$_GET['id2'];
@@ -680,32 +860,25 @@ $selQry2="SELECT sum(`totalPrice`) AS `Total` FROM `orders` WHERE `orderDate` >=
     echo'<h1 class="text-center col-12 bg-danger py-3 text-white my-2"> Order Canceled </h1>';
      header("refresh:1;url=myOrder.php"); 
       }
-
-      //////////////////////////////////////////////////////////////////////////////////////////////////
-    
-     //  check login for admin is exit
-     function loginAdmin($name,$pass){
-
-      $selQry="select * from admin where `adminName`=:sname and `adminPass`=:spass ";
-      $stmt=$this->db->prepare($selQry);
-
-      $stmt->bindParam(":sname",$name);
-     $stmt->bindParam(":spass",$pass);
-
-     $stmt->execute();
-     $count=$stmt->rowCount();
-
-     if($count==1){
-       return true;
-     }
-
-     else{
-      return false;
-     }
-    
+      /////////////////////////////////////////////////////////////////////////////////////////////////
+      public function selectRoom_es()
+      {
+        $selqRoom="select * from room";
+         $stmt=$this->db->prepare($selqRoom);
+          $stmt->execute();
+          $rows=$stmt->fetchAll(PDO::FETCH_ASSOC); 
+     // var_dump($rows);
+          echo "<select id='room' class='form-control' required name='room'>";
       
-     }
-     
+      foreach ($rows as $value) {
+       echo "<option>".$value['roomNo']."</option>";
+      }
+      
+    echo"</select>";
+
+        
+      }
+
 
 
 
