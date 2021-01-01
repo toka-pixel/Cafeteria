@@ -51,84 +51,56 @@ include 'header.php';
             </div>
         </div>
     </div>
-    </nav>   <!-- end navbar -->   
+    </nav>   <!-- end navbar -->  
     <div class="container mt-4 ">
-        <div class="row">
-            <div class="col product ml-4">Add Product</div>
+        <div class="row text-center">
+            <div class="col product ml-4">Add Category</div>
         </div>
-    </div> <!-- end add product -->
+    </div> <!-- end add product --> 
     <div class="container my-4">
-         <form class="needs-validation" novalidate method="post" action="product.php" enctype="multipart/form-data">
+         <form class="needs-validation" novalidate method="post" action="" enctype="multipart/form-data">
            <div class="row mb-3 ">
-             <div class="col-4">
-               <label>Product</label>
+           <div class="col-3">
+               
+               </div>
+             <div class="col-3">
+               <label>Id Category</label>
              </div>
-             <div class="col-4">
-               <input type="text" name="product">
+             <div class="col-3">
+               <input type="number" name="idcategory">
              </div>
-             <div class="col-4">
+             <div class="col-3">
                
              </div>
            </div>
-           <div class="row mb-3">
-            <div class="col-4">
-              <label>Price</label>
-            </div>
-            <div class="col-2">
-              <input type="number" step="any" name="price">
-            </div>
-            <div class="col-2">
-              <p>EGP</p>
-            </div>
-            <div class="col-4">
-              
-            </div>
-
-          </div>
-          <div class="row mb-3">
-            <div class="col-4">
-            <label for="exampleFormControlSelect1">Category</label>
-            </div>
-            <div class="col-2 ">
-              <select class="stycat" id="" name="category" >
-                <option selected>Choose...</option>
-                <option value="Hot Drinks">Hot Drinks</option>
-                <option value="Cold Drinks">Cold Drinks</option>
-              </select>
-            </div>
-            <div class="col ">
-                <a href="addcategory.php">Add Category</a>
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-4">
-              <label>Product Picture</label>
-            </div>
-            <div class="col">
-              <input type="file" name="picture">
-            </div>
-          </div>
-          <div class="row">
-               <div class="col-1">
+           <div class="row mb-3 ">
+           <div class="col-3">
+               
+               </div>
+             <div class="col-3">
+               <label>Name Category</label>
+             </div>
+             <div class="col-3">
+               <input type="text" name="namecategory">
+             </div>
+             <div class="col-3">
+               
+             </div>
+           </div>
+           <div class="row my-3">
+               <div class="col-5">
                   
                </div>
-              <div class="col-1">
-                  <button type="submit" class="btn btn-primary" >Save</button>
+              <div class="col-5">
+                  <button type="submit" class="btn btn-primary" >Submit</button>
                </div>
                <div class="col-2">
-                  <button type="reset" class="btn btn-primary" >Reset</button>
+                  <!-- <button type="reset" class="btn btn-primary" >Reset</button> -->
                </div>
           </div>
-         </form>
-      </div>
-       <?php
-        //  include ('userClass.php');
-        //  $user= new user();
-        //  $user->database_con();
-        //  var_dump($_post);
-      
-      ?> 
-          <script>
+        </form>
+    </div>
+    <script>
           // Example starter JavaScript for disabling form submissions if there are invalid fields
           (function() {
             'use strict';
@@ -148,8 +120,19 @@ include 'header.php';
             }, false);
           })();
           </script>
- </body>
-</html>
+
+            
+  </body>
+  </html>
+  <?php
+         include ('userClass.php');
+         $user= new user();
+         $user->database_con();
+         $user->addcategory();
+       
+      
+      ?> 
+ 
 <?php
 include('footer.php');
 ?>

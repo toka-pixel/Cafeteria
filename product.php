@@ -64,6 +64,7 @@ include 'header.php';
        include ('userClass.php');
        $user= new user();
        $user->database_con();
+    //    $user->addcategory();
        $user->addproduct();
        $user->displayproduct();
        
