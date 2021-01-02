@@ -69,7 +69,7 @@ if(  isset( $_GET['quantity'] )  )
         <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="myOrders.php">My orders</a>
+        <a class="nav-link" href="myOrder.php">My orders</a>
       </li>
       <!-- <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -241,7 +241,7 @@ $rows=$user->showproductsUsert();
     echo 
     "<div class='col-sm-3 one-product'>";
    echo "<input type='hidden' name='id' value=".$row['prodId']." />
-    <div class='image' ><img class='buy' id='".$row['prodId']."' src='data:;base64,".base64_encode($row['prodImg'])."' width='100px' height='100px' /></div>
+    <div class='image ' ><p class='buy' id='".$row['prodId']."  width='100px' height='100px' >".$row['prodImg']."</p></div>
     <div class='name'>".$row['prodName']."</div>
     <div class='price'><span class='label'><span name='".$row['prodPrice']."'>".$row['prodPrice']." EGP</span></span></div>
  

@@ -7,10 +7,13 @@
 </style>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<script src='jquery.js'></script>
-	<script type="text/javascript" src="bootstrap-4.5.3-dist/js/bootstrap.bundle.js"></script>
-	<link rel="stylesheet" type="text/css" href="bootstrap-4.5.3-dist/css/bootstrap.css">
-<!-- 	<link rel="stylesheet" type="text/css" href="php2form.css"> -->
+	<!-- <script src='jquery.js'></script> -->
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <script src="js/jquery-1.12.4.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+	<!-- <script type="text/javascript" src="bootstrap-4.5.3-dist/js/bootstrap.bundle.js"></script>
+	<link rel="stylesheet" type="text/css" href="bootstrap-4.5.3-dist/css/bootstrap.css"> -->
+	<!-- <link rel="stylesheet" type="text/css" href="php2form.css"> -->
 </head>
 <body>
   <h1 class="text-center col-12 bg-primary py-3 text-white my-2">Add User</h1>

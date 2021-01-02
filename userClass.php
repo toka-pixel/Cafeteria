@@ -349,6 +349,10 @@
     }
     
     $sql2 = "DELETE FROM `products` WHERE `prodId`='$id' ";
+    $sql3 = "DELETE FROM `prodorders` WHERE `idProd`='$id' ";
+    $stmt1=$this->db->prepare($sql3);
+    $stmt1->execute();
+
     $stmt=$this->db->prepare($sql2);
     $stmt->execute();
     echo'<h1 class="text-center col-12 bg-danger py-3 text-white my-2"> Product  Have Been Deleted </h1>';

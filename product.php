@@ -16,7 +16,7 @@ include 'header.php';
     </style>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light ">
+     <nav class="navbar navbar-expand-lg navbar-light bg-light ">
     <div class="container">
         <a class="navbar-brand" href="#">Cafeteria</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,13 +32,13 @@ include 'header.php';
                 <a class="nav-link" href="product.php">Products </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Users</a>
+                <a class="nav-link" href="users.php">Users</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">Manual Orders</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Checks</a>
+                <a class="nav-link" href="checks.php">Checks</a>
             </li>
             
             </ul>
@@ -48,7 +48,7 @@ include 'header.php';
             </div>
         </div>
     </div>
-    </nav>                <!--   end of navbar -->
+    </nav>   <!-- end navbar -->  
     <div class="container mt-5 mb-3">
         <div class="row ">
             <div class="col-6 ml-5 product" >All Products</div>
